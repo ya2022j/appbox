@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>appbox</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" class="js-site-favicon" type="image/svg+xml" href="https://svgsilh.com/svg/33581.svg">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src="http://cdn.bootcss.com/vue/2.5.8/vue.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+<body>
+<div class="container" id="vueApp">
+    <div class="row mx-auto w-75" style="margin-top: 20px">
+        <div class="col-12 text-center">
+            <h3>App Box 🦉</h3>
+        </div>
+    </div>
+    <div class="row mx-auto w-75" style="height: 15px"></div>
+    <div class="row mx-auto w-75">
+        <div class="col-6">
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#myModal">新增</button>
+
+                <button type="button" class="btn btn-outline-primary btn-sm" @click="saveRows">保存</button>
+            </div>
+            <button type="button" class="btn btn-outline-warning btn-sm" @click="delRows">删除</button>
+        </div>
+        <div class="col-6">
+            <div class="input-group">
+                <input type="text" class="form-control input-group-sm" placeholder="输入应用id进行搜索">
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+                    </span>
+            </div>
+        </div>
+    </div>
+    <div class="row mx-auto w-75" style="height: 15px"></div>
+    <div class="row mx-auto w-75">
+        <div class="col-22">
+            <table class="table table-hover table-success">
+                <thead class="thead-default">
+                <tr>
+                    <th><input type="checkbox"></th>
+                   <th>序号</th>
+                    <th>应用名称</th>
+                    <th>应用类型</th>
+                    <th>域名</th>
+                    <th>技术栈</th>
+                    <th>前端端口</th>
+                    <th>后端端口</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr v-for=" (app,index)  in apps">
+
+                    <td><input type="checkbox" :value="index" v-model="checkedRows"></td>
+                    <td>{{app.id}}</td>
+                    <td>{{app.app_name}}</td>
+                    <td>{{app.app_type}}</td>
+                    <td>{{app.domain}}</td>
+                    <td>{{app.stack}}</td>
+                    <td>{{app.fontport}}</td>
+                    <td>{{app.backendport}}</td>
+
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- 模态框 -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">新增应用信息</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-3">应用名称：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="应用名称" v-model="newRow.app_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">应用类型：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="应用类型" v-model="newRow.app_type">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">域名：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="域名" v-model="newRow.domain">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">技术栈：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="技术栈" v-model="newRow.stack">
+                        </div>
+                    </div>
+                                        <div class="row">
+                        <div class="col-3">前端端口：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="前端端口" v-model="newRow.font_port">
+                        </div>
+                    </div>
+                                        <div class="row">
+                        <div class="col-3">后端端口：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="后端端口" v-model="newRow.backend_port">
+                        </div>
+                    </div>
+                                        <div class="row">
+                        <div class="col-3">其他：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="其他" v-model="newRow.others">
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal" @click="addRow">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+
+<script>
+
+
+    new Vue({
+        el: "#vueApp",
+        data: {
+            checkAll: false,
+            checkedRows: [],
+            apps:"",
+            newRow:{}
+        },
+        provide(){
+            reload:this.reload
+        },
+        inject: ['reload'],
+        methods: {
+            addRow: function () {
+                this.apps.push(this.newRow);
+
+                let data = new FormData();
+                // data.append("app_name",this.newRow.app_name)
+                
+                axios.post("/appbox/api",{
+                    "app_name":this.newRow.app_name,
+                    "app_type":this.newRow.app_type,
+                    "domain":this.newRow.domain,
+                    "stack":this.newRow.stack,
+                    "fontport":this.newRow.font_port,
+                    "backendport":this.newRow.backend_port,
+
+                }).then(
+                    (res)=>{
+                        console.info(res);
+                        this.reload();
+                        this.$notify({
+                            group: 'foo',
+                            type: 'success',
+                            text: '添加成功'
+                        });
+
+                    }
+                ).catch(
+                    (error)=>{
+                        console.error(error)
+                    }
+                )
+
+
+
+
+                console.log(this.newRow);
+                this.newRow = {};
+                location.reload(); // 重新加载
+            },
+            saveRows:function () {//保存表格数据
+
+            },
+            delRows:function () {
+                if (this.checkedRows.length <= 0){
+                    alert("您未选择需要删除的数据");
+                    return false;
+                }
+                if (!confirm("您确定要删除选择的数据吗？")){
+                    return false;
+                }
+         
+                var remove_id =String(this.apps[this.checkedRows[0]]["id"]);
+                console.log(remove_id);
+                axios.delete('/appbox/api'+ '/'+remove_id).then((res) => {
+                        this.reload();
+                        this.$notify({
+                            group: 'foo',
+                            type: 'info',
+                            text: '删除成功'
+                        });
+                        this.reload()
+                    }).catch((error) => {
+                    console.log(error)
+                })
+
+           
+              location.reload(); // 删除后重新加载
+            },
+
+            getAllDT:function(){
+                axios.get('/appbox/api',{
+                    Headers:{
+                        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST,GET,PUT,DELETE",
+        "Access-Control-Allow-Headers": "Content-Type"
+                    }})
+                    .then((res) => {
+
+                        this.apps = res.data;
+
+                    }).catch((error) => {
+                    console.log(error)
+                });
+   
+
+            }
+            
+},
+            mounted () {
+                        this.getAllDT()
+            }
+
+
+
+})
+</script>
+</body>
+
+</html>

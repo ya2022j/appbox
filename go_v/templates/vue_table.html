@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<!----https://www.freesion.com/article/4845978940/ -->
+<link rel="stylesheet" href="https://unpkg.com/iview/dist/styles/iview.css">
+<style type="text/css">
+    #inline_tab {
+        min-width: 800px;
+        margin: 10px;
+    }
+    .tab {
+        width: 100%;
+        margin-top: 10px;
+        border: 1px solid black;
+ 
+    }
+    .tab tr td{
+        border: 1px solid black;
+        text-align: center;
+        margin: 0;
+        padding: 3px;
+        width:25%;
+    }
+ 
+</style>
+<body>
+<div id="inline_tab">
+    <Row>
+        <i-col span="16">
+            <i-button style="float: right" @click="addItem" style="margin-left: 6px;">
+                <icon type="md-add"></icon>
+            </i-button>
+            <i-button v-if="item_list[0].edit_status" style="float: right" @click="saveItem" style="margin-right: 5px;">
+                保存
+            </i-button>
+        </i-col>
+    </Row>
+    <Row>
+        <i-col span="16">
+            <table class="tab" >
+                <tr>
+                    <td><b>D</b></td>
+                    <td><b>Sex</b></td>
+                    <td><b>Birthday</b></td>
+                    <td><b>Interest</b></td>
+                </tr>
+                <tr v-for="(item,index) in item_list">
+                    <td v-if="item.edit_status">
+                        <i-input v-model="item.name" placeholder="输入名字"></i-input>
+                    </td>
+                    <td v-else v-text="item.name"></td>
+ 
+                    <td v-if="item.edit_status">
+                        <radio-group v-model="item.sex">
+                            <Radio value="男" label="男">男</Radio>
+                            <Radio value="女" label="女">女</Radio>
+                        </radio-group>
+                    </td>
+                    <td v-else v-text="item.sex"></td>
+ 
+                    <td v-if="item.edit_status">
+                         <date-picker v-model="item.birthday" type="date" placeholder="Select date" style="width: 200px"></date-picker>
+                    </td>
+                    <td v-else v-text="item.birthday"></td>
+ 
+                    <td v-if="item.edit_status">
+                        <i-select v-model="item.interest" multiple style="width:260px">
+                            <i-option value="篮球" >篮球</i-option>
+                            <i-option value="游戏" >游戏</i-option>
+                            <i-option value="动漫" >动漫</i-option>
+                        </i-select>
+                    </td>
+                    <td v-else v-text="item.interest"></td>
+                </tr>
+            </table>
+        </i-col>
+ 
+    </Row>
+</div>
+ 
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/iview/dist/iview.min.js"></script>
+<script type="application/javascript">
+    function getNow(s) {
+            return s < 10 ? '0' + s : s;
+    }
+ 
+    function dateTypeToString(myDate = null) {
+        if (myDate == null || myDate == '') {
+            return ''
+        }
+        else {
+            var year = myDate.getFullYear();
+            //获取当前月
+            var month = myDate.getMonth() + 1;
+            //获取当前日
+            var date = myDate.getDate();
+            var h = myDate.getHours();       //获取当前小时数(0-23)
+            var m = myDate.getMinutes();     //获取当前分钟数(0-59)
+            var s = myDate.getSeconds();
+ 
+            var now = year + '-' + getNow(month) + "-" + getNow(date);
+            return now
+ 
+        }
+ 
+    }
+ 
+    new Vue({
+        el: '#inline_tab',
+        data: {
+            item_list: [
+                {'domain':'recruit.csbook',
+                'url':'http://recruit.csbook',
+                'uptime':'1998-04-03',
+
+                'edit_status':false}
+            ]
+        },
+        methods: {
+            addItem: function () {
+                let _self = this
+                let item = {
+                    'domain': '',
+                    'url': '',
+                    'uptime': '',
+                     'edit_status': true
+                }
+                _self.item_list.unshift(item)
+ 
+            },
+            saveItem: function () {
+                let _self = this
+                for(let i=0;i<_self.item_list.length;i++){
+                    let item = _self.item_list[i]
+                    item.birthday = dateTypeToString(item.birthday)
+                    item.edit_status = false
+                }
+            },
+        }
+    })
+</script>

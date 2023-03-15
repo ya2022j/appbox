@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>appbox</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="http://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
+    <script src="http://cdn.bootcss.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src="http://cdn.bootcss.com/vue/2.5.8/vue.min.js"></script>
+
+</head>
+<body>
+<div class="container" id="vueApp">
+    <div class="row mx-auto w-75" style="margin-top: 20px">
+        <div class="col-12 text-center">
+            <h3>App Box</h3>
+        </div>
+    </div>
+    <div class="row mx-auto w-75" style="height: 15px"></div>
+    <div class="row mx-auto w-75">
+        <div class="col-6">
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#myModal">新增</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" @click="saveRows">保存</button>
+            </div>
+            <button type="button" class="btn btn-outline-warning btn-sm" @click="delRows">删除</button>
+        </div>
+        <div class="col-6">
+            <div class="input-group">
+                <input type="text" class="form-control input-group-sm" placeholder="输入设备编号进行搜索">
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+                    </span>
+            </div>
+        </div>
+    </div>
+    <div class="row mx-auto w-75" style="height: 15px"></div>
+    <div class="row mx-auto w-75">
+        <div class="col-22">
+            <table class="table table-hover table-success">
+                <thead class="thead-default">
+                <tr>
+                    <th><input type="checkbox"></th>
+                    <th>序号</th>
+                    <th>应用名称</th>
+                    <th>应用类型</th>
+                    <th>域名</th>
+                    <th>技术栈</th>
+                    <th>前端端口</th>
+                    <th>后端端口</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr v-for="(app,index) in apps">
+                    <td><input type="checkbox" :value="index" v-model="checkedRows"></td>
+                    <td>{{index+1}}</td>
+                    <td>{{app.app_name}}</td>
+                    <td>{{app.app_type}}</td>
+                    <td>{{app.domain}}</td>
+                    <td>{{app.stack}}</td>
+                    <td>{{app.font_port}}</td>
+                    <td>{{app.backend_port}}</td>
+
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- 模态框 -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">新增应用信息</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-3">应用名称：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="应用名称" v-model="newRow.app_name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">应用类型：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="应用类型" v-model="newRow.app_type">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">域名：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="域名" v-model="newRow.domain">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-3">技术栈：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="技术栈" v-model="newRow.stack">
+                        </div>
+                    </div>
+                                        <div class="row">
+                        <div class="col-3">前端端口：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="前端端口" v-model="newRow.font_port">
+                        </div>
+                    </div>
+                                        <div class="row">
+                        <div class="col-3">后端端口：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="后端端口" v-model="newRow.backend_port">
+                        </div>
+                    </div>
+                                        <div class="row">
+                        <div class="col-3">其他：</div>
+                        <div class="col-9">
+                            <input class="form-control" placeholder="其他" v-model="newRow.others">
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal" @click="addRow">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<script>
+new Vue({
+	el: '#nikki225_positive',
+
+})
+
+</script>
+
+<script>
+
+    var datas = [
+        {
+            app_name: "gin-vue-admin",
+            app_type: "后台管理",
+            domain: "gin.vue.admin.itbenyou.com",
+            stack: "gin vu vu vu ",
+            font_port: "8080",
+            backend_port: "8081",
+
+        },
+                {
+            app_name: "go-gin-api",
+            app_type: "代码生成",
+            domain: "go.itbenyou.com",
+
+            stack: "gin vue ",
+            font_port: "8080",
+            backend_port: "8081",
+
+        },
+                {
+            app_name: "gin-vue-admin",
+            app_type: "后台管理",
+            domain: "gin.vue.admin.itbenyou.com",
+
+            stack: "gin vue ",
+            font_port: "8080",
+            backend_port: "8081",
+        },
+                {
+            app_name: "go-gin-api",
+            app_type: "代码生成",
+            domain: "go.itbenyou.com",
+
+            stack: "gin vue ",
+            font_port: "8080",
+            backend_port: "8081",
+        },
+                {
+            app_name: "gin-vue-admin",
+            app_type: "后台管理",
+            domain: "gin.vue.admin.itbenyou.com",
+
+            stack: "gin vue ",
+            font_port: "8080",
+            backend_port: "8081",
+        },
+                {
+            app_name: "go-gin-api",
+            app_type: "代码生成",
+            domain: "go.itbenyou.com",
+
+            stack: "gin vue ",
+            font_port: "8080",
+            backend_port: "8081",
+        },
+      ];
+
+    new Vue({
+        el: "#vueApp",
+        data: {
+            checkAll: false,
+            checkedRows: [],
+            apps: datas,
+            newRow:{}
+        },
+        	data: {
+
+	    list:null
+	},
+	methods: {
+	    getMovies:function () {
+
+
+	        var that=this;
+	        //get("url")
+	        axios.get("/1605").then(function (resp){
+
+
+	            that.list=resp.data;
+	        })
+	      }
+	  },
+
+	  mounted:function (){
+	       this.getMovies();
+	  }
+
+
+
+
+        methods: {
+            addRow: function () {
+                this.apps.push(this.newRow);
+                this.newRow = {};
+            },
+            saveRows:function () {//保存表格数据
+                
+            },
+            delRows:function () {
+                if (this.checkedRows.length <= 0){
+                    alert("您未选择需要删除的数据");
+                    return false;
+                }
+                if (!confirm("您确定要删除选择的数据吗？")){
+                    return false;
+                }
+
+                for(var i=0;i<this.checkedRows.length;i++){
+                    var checkedRowIndex = this.checkedRows[i];
+                    this.apps = $.grep(this.apps,function (app,j) {
+                        return j != checkedRowIndex;
+                    });
+                }
+                this.checkedRows = [];
+            }
+        }
+    });
+</script>
